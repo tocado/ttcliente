@@ -115,6 +115,7 @@
         f.dni = $("#i_dni").val();
         if (f.dni.length < 7) {
             $("#i_dni").focus();
+            cargaNo("El DNI no existe en nuestra base");
             return false;
         }
         //f es el form
