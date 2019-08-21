@@ -76,7 +76,9 @@
 <script type="text/javascript" src="scripts/plugins.js"></script>
 <script type="text/javascript" src="scripts/custom.js"></script>
 <script type="text/javascript">
-    var logueado = false;
+    var serverAPI="http://exdec.trans-ti.com/exdec/api/";
+    //var serverAPI="http://localhost/exdec/api/";
+
     var deviceReady = function(){
         if(window.MobileAccessibility){
             window.MobileAccessibility.usePreferredTextZoom(false);
@@ -124,8 +126,24 @@
 
     var enviarDNI = function (f) {
         // f.dni
-        
-        cargaSi(9519);
+
+        var data = {};
+        data.action="traerPuntos";
+        data.dni=f.dni;
+        $.ajax({
+            url: serverAPI,
+            type: "POST",
+            data: data,
+            success: function(data, status, xhr) {
+                var out = (data && typeof data === 'object') ? JSON.stringify(data) : data;
+                cargaSi(data.puntos);
+                $("#i_dni").focus();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                cargaNo("No existen puntos");
+            } 
+        });
+
         //cargaNo("ERROR");
     };
 </script>
