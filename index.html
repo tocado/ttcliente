@@ -54,9 +54,9 @@
                         <div class="top-25 bottom-30">
                             <div class="input-simple-1 has-icon input-green bottom-30">
                                 <strong>Requerido</strong>
-                                <em>DNI</em>
+                                <em>Telefono</em>
                                 <i class="fa fa-user"></i>
-                                <input id="i_dni" type="number" placeholder="DNI">
+                                <input id="i_telefono" type="number" placeholder="Teléfono con 54911">
                             </div>
                             <h1 id="resultado" class="center-text uppercase ultrabold"></h1>
                        </div>
@@ -68,7 +68,7 @@
         </div>
      
 	</div>
-	<a href="#" class="back-to-top-badge back-to-top-small shadow-large bg-blue-dark"><i class="fa fa-angle-up"></i>Back to Top</a>
+	<a href="#" class="back-to-top-badge back-to-top-small shadow-large bg-blue-dark"><i class="fa fa-angle-up"></i>Volver Arriba</a>
 </div>
 
 
@@ -83,61 +83,63 @@
         if(window.MobileAccessibility){
             window.MobileAccessibility.usePreferredTextZoom(false);
         }
-        $("#i_dni").focus();
+        $("#i_telefono").focus();
     }
     document.addEventListener('deviceready', deviceReady, false);
     $(function () {
-        $("#i_dni").focus();
-        $("#i_dni").keyup(function (e) {
-            leng = $("#i_dni").val().length;
-            if (e.which == 13 || leng > 7) {
-                procesarDNI();
+        $("#i_telefono").focus();
+        $("#i_telefono").keyup(function (e) {
+            leng = $("#i_telefono").val().length;
+            if (e.which == 13 || leng > 12) {
+                procesarTelefono();
             }
         });
 
         $("#b_cargar").click(function () {
-            procesarDNI();
+            procesarTelefono();
         });
     });
-
     var cargaSi = function (p) {
+        //p[i].comercio
+        //p[i].puntos
         $("#resultado").html("");
-        $("#resultado").append("<div class='demo-line gradient-green-dark'>PUNTOS DISPONIBLES: "+p+"</div>");
-        $("#i_dni").val("");
+        for (var i = 0;i < p.length;i += 1) {    
+            $("#resultado").append("<div class='demo-line gradient-green-dark'><h3>"+p[i].comercio+"</h3>PUNTOS DISPONIBLES: "+p[i].puntos+"</div><hr>");
+        }
+        $("#i_telefono").val("");
         $(window).scrollTop(0);
-        $("#i_dni").focus();
+        $("#i_telefono").focus();
     };
 
     var cargaNo = function (m) {
         $("#resultado").html("");
         $("#resultado").append("<div class='demo-line gradient-red-dark'>"+m+"</div>");
     };
-    var procesarDNI = function () {
+    var procesarTelefono = function () {
         var f = {};
-        f.dni = $("#i_dni").val();
-        if (f.dni.length < 7) {
-            $("#i_dni").focus();
-            cargaNo("El DNI no existe en nuestra base");
+        f.telefono = $("#i_telefono").val();
+        if (f.telefono.length < 13) {
+            $("#i_telefono").focus();
+            cargaNo("El Telefono no existe en nuestra base");
             return false;
         }
-        //f es el form
-        enviarDNI(f);
+        enviarTelefono(f);
     };
 
-    var enviarDNI = function (f) {
-        // f.dni
+    var enviarTelefono = function (f) {
+        // f.telefono
 
         var data = {};
         data.action="traerPuntos";
-        data.dni=f.dni;
+        data.telefono=f.telefono;
         $.ajax({
             url: serverAPI,
             type: "POST",
             data: data,
             success: function(data, status, xhr) {
                 var out = (data && typeof data === 'object') ? JSON.stringify(data) : data;
-                cargaSi(data.puntos);
-                $("#i_dni").focus();
+                cargaSi(data);
+                $("#i_telefono").focus();
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 cargaNo("No existen puntos");
